@@ -1,0 +1,17 @@
+# WInUI3 ToggleButton 切换按钮
+
+```xml
+<ToggleButton Content="ToggleButton" Click="Button_Click" />
+```
+
+![Untitled](WInUI3%20ToggleButton%20%E5%88%87%E6%8D%A2%E6%8C%89%E9%92%AE%205e47dec33868423db741db0ab26dc166/Untitled.png)
+
+![Untitled](WInUI3%20ToggleButton%20%E5%88%87%E6%8D%A2%E6%8C%89%E9%92%AE%205e47dec33868423db741db0ab26dc166/Untitled%201.png)
+
+# 属性
+
+- IsEnabled 是否启用
+
+# 方法
+
+- Click 点击事件

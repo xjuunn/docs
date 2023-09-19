@@ -1,0 +1,46 @@
+# WinUI3 组合框
+
+```xml
+<ComboBox Header="Colors" PlaceholderText="Pick a color" Width="200">
+       <x:String>Blue</x:String>
+       <x:String>Green</x:String>
+       <x:String>Red</x:String>
+       <x:String>Yellow</x:String>
+</ComboBox>
+```
+
+![Untitled](WinUI3%20%E7%BB%84%E5%90%88%E6%A1%86%20ba1ee556a8da4fb285315bee838587e2/Untitled.png)
+
+![Untitled](WinUI3%20%E7%BB%84%E5%90%88%E6%A1%86%20ba1ee556a8da4fb285315bee838587e2/Untitled%201.png)
+
+# 从外部加载Item
+
+```xml
+<ComboBox ItemsSource="{x:Bind Fonts}" DisplayMemberPath="Item1" SelectedValuePath="Item2" Header="Font" Width="200" Loaded="Combo2_Loaded"/>
+```
+
+# 属性
+
+- Header 头部文本
+- PlaceholderText 默认显示的文本
+- ItemsSource 数据源
+- DisplayMemberPath 数据源中需要被显示出来的字段名称
+- SelectedValuePath 选定的数据路径
+- IsEditable 是否支持编辑
+
+# 方法
+
+- SelectionChanged 选项改变按
+- Loaded 数据加载完毕
+- TextSubmitted 提交
+
+~~~ C#
+<ComboBox Header="标题"
+                  PlaceholderText="提示文本"
+                  Width="200">
+            <x:String>蓝色</x:String>
+            <x:String>红色</x:String>
+            <x:String>绿色</x:String>
+        </ComboBox>
+~~~
+
