@@ -26,4 +26,17 @@ JWT通常由三部分组成，分别是Header（头部）、Payloaad（有效荷
 此后，客户端每次与服务器通信，都要带上这个JWT的字符串，从而进行身份认证。推荐的做法是把JWT放在HTTP请求头的Authorization字段中
 
 > Authoization: Bearer<token>
->
+
+### jsonwebtoken
+
+~~~ js
+const jwt= require('jsonwebtoken');
+const secret_key = "test01"; // 密钥
+// 生成token
+let token = jwt.sign({data:"test0000",test:"aaa"},secret_key,{algorithm:"HS256"});
+// 解密token
+jwt.verify(token,secret_key,(err,data)=>{
+    console.log(err,data)
+});
+~~~
+
