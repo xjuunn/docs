@@ -32,3 +32,4 @@ public class TestActivity extends AppCompatActivity {
         binding.executePendingBindings();   
     }}
 ```
+
