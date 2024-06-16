@@ -6,7 +6,7 @@ Nestjs 是一个用于构建高效、可扩展的Nodejs服务器端应用的框�
 
 ~~~ shell
 npm i -g @nestjs/cli
-npm new project-name
+nest new project-name
 ~~~
 
 ```
@@ -20,7 +20,7 @@ src
 
 *   app.controller.ts 带有单个路由的基本控制器示例
 *   app.controller.spec.ts 对于基本控制器的单元测试样例
-*   app.module.ts 应用程序的跟模块
+*   app.module.ts 应用程序的根模块
 *   app.service.ts 带有单个方法的基本服务
 *   main.ts 程序的入口文件。使用`NestFactory`来创建Nest应用实例
 

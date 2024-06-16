@@ -253,7 +253,7 @@ export class CatsController {
     }
     
     @Get(':id')
-    findOne(@Param('id') id string) {
+    findOne(@Param('id') id:string) {
         return 'this action returns a #' + id;
     }
     

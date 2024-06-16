@@ -6,7 +6,7 @@ Providers 是Nest的一个基本概念，许多基本的Nest类都可以被视�
 
 可以通过constructor注入依赖关系。这意味着对象可以彼此创建各种关系，并且连接对象实例的功能在很大程度上可以委托给Nest运行时系统。
 
-Provider指示一个用`@injectable()`装饰器注释的类。
+**Provider指示一个用`@injectable()`装饰器注释的类。**
 
 控制器应处理HTTP请求并将更复杂的任务委托给providers。
 

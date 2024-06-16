@@ -2,7 +2,6 @@
   <a href="https://github.com/xjuunn/docs/">
     <img src="https://raw.githubusercontent.com/xjuunn/Minecraft-Texture/main/%E8%B4%B4%E5%9B%BE/item/ico/writable_book.ico" alt="Logo" width="80" height="80">
   </a>
-
   <h1 align="center">Docs</h3>
   <div align="center">
     <i> 一个简单的个人<b>知识库</b></i> <br/> <br/>
@@ -12,6 +11,11 @@
 ## 计划学习
 
 
+*   [ ] Nestjs
+*   [ ] typeorm
+*   [ ] 
+
 
 
 ## 计划了解
+
