@@ -567,5 +567,511 @@ useHead({
 </script>
 ~~~
 
+## 过渡
 
+使用vue或原生浏览器view transitions在页面和布局之间应用过渡
+
+>   Nuxt利用vue的transition组件，用于在页面和布局之间的过渡
+
+### 页面过渡
+
+启用对所有页面的过渡 nuxt.config.ts
+
+~~~ ts
+export default defineNuxtConfig({
+    app:{
+        pageTransition:{name:'page',mode:'out-in'}
+    }
+})
+~~~
+
+在页面之间添加过渡，需要将以下css添加到app.vue中
+
+~~~ vue
+<template>
+	<NuxtPage/>
+</template>
+<style>
+	.page-enter-active,
+    .page-leave-active {
+        transition:all 0.4s;
+    }
+	.page-enter-from,
+    .page-leave-to {
+        opacity:0;
+        filter:blur(1rem);
+    }
+</style>
+~~~
+
+为页面设置不同的过渡
+
+about.vue
+
+~~~ vue
+<script setup lang='ts'>
+	definePageMeta({
+        pageTransition:{
+            name:'rotate'
+        }
+    })
+</script>
+~~~
+
+app.vue
+
+~~~ vue
+<template>
+	<NuxtPage/>
+</template>
+<style>
+.rotate-enter-active,
+    .rotate-leave-active {
+        transition:all 0.4s;
+    }
+    .rotate-enter-from,
+    .rotate-leave-to {
+        opacity:0;
+        transform:rotate3d(1,1,1,15deg)
+    }
+</style>
+~~~
+
+### 布局过渡
+
+nuxt.config.ts
+
+~~~ ts
+export default defineNuxtConfig({
+    app:{
+        layoutTransition:{name:'layout',mode:'out-in'}
+    }
+})
+~~~
+
+app.vue
+
+~~~vue
+<templage>
+	<NuxtLayout>
+    	<NuxtPage/>
+    </NuxtLayout>
+</templage>
+<style>
+	.layout-enter-active,
+    .layout-leave-active{
+        transition:all 0.4;
+    }
+    .layout-enter-from,
+    .layout-leave-to {
+        filter:grayscale(1);
+    }
+</style>
+~~~
+
+应用于页面组件
+
+~~~ vue
+<script setup lang='ts'>
+	definePageMeta({
+        layout:'orange',
+        layoutTransition:{
+            name:'slide-in'
+        }
+    })
+</script>
+~~~
+
+### 全局设置
+
+可以使用 nuxt.config 全局自定义这些默认转换名称。
+pageTransition 和 layoutTransition 都接受 TransitionProps 作为 JSON 可序列化值，可以在其中传递自定义 CSS 过渡的name、mode和其他有效的过渡道具。
+
+nuxt.config.ts
+
+~~~ ts
+export default defineNuxtConfig({
+  app: {
+    pageTransition: {
+      name: 'fade',
+      mode: 'out-in' // default
+    },
+    layoutTransition: {
+      name: 'slide',
+      mode: 'out-in' // default
+    }
+  }
+})
+~~~
+
+要覆盖全局过渡属性，定义单个页面的页面或布局。
+
+~~~ vue
+<script setup lang='ts'>
+	definePageMeta({
+        pageTransition: {
+            name:'bounce',
+            mode:'out-in'
+        }
+    })
+</script>
+~~~
+
+### 禁用过渡
+
+~~~ vue
+<script setup lang='ts'>
+definePageMeta({
+    pageTransition:false,
+    layoutTransition:false,
+})
+</script>
+~~~
+
+或者全局在nuxt.config.ts
+
+~~~ ts
+export default defineNuxtConfig({
+    app:{
+        pageTransition:false,
+        layouTransition:false,
+    }
+})
+~~~
+
+### JavaScript 钩子
+
+~~~ vue
+<script setup lang='ts'>
+	definePageMeta({
+        pageTransition:{
+            name:'custom-flip',
+            mode:'out-in',
+            onBeforeEnter:(el)=>{
+                console.log('Before enter')
+            },
+            onEnter:(el,done) => {},
+            onAfterEnter:(el) => {}
+        }
+    })
+</script>
+~~~
+
+### 动态转换
+
+可以利用内敛中间件将不同的转换名称分配给`to.meta.pageTransition`
+
+pages/[id].vue
+
+~~~ vue
+<script setup lang="ts">
+definePageMeta({
+  pageTransition: {
+    name: 'slide-right',
+    mode: 'out-in'
+  },
+  middleware (to, from) {
+    if (to.meta.pageTransition && typeof to.meta.pageTransition !== 'boolean')
+      to.meta.pageTransition.name = +to.params.id! > +from.params.id! ? 'slide-left' : 'slide-right'
+  }
+})
+</script>
+
+<template>
+  <h1>#{{ $route.params.id }}</h1>
+</template>
+
+<style>
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.2s;
+}
+.slide-left-enter-from {
+  opacity: 0;
+  transform: translate(50px, 0);
+}
+.slide-left-leave-to {
+  opacity: 0;
+  transform: translate(-50px, 0);
+}
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translate(-50px, 0);
+}
+.slide-right-leave-to {
+  opacity: 0;
+  transform: translate(50px, 0);
+}
+</style>
+~~~
+
+layouts/default.vue
+
+~~~ vue
+<script setup lang="ts">
+const route = useRoute()
+const id = computed(() => Number(route.params.id || 1))
+const prev = computed(() => '/' + (id.value - 1))
+const next = computed(() => '/' + (id.value + 1))
+</script>
+
+<template>
+  <div>
+    <slot />
+    <div v-if="$route.params.id">
+      <NuxtLink :to="prev">⬅️</NuxtLink> |
+      <NuxtLink :to="next">➡️</NuxtLink>
+    </div>
+  </div>
+</template>
+~~~
+
+### 使用NuxtPage进行转换
+
+~~~ vue
+<template>
+	<div>
+        <NuxtLayout>
+    		<NuxtPage :transition="{
+                                   name:'bounce',
+                                   mode:'out-in'
+                                   }"
+    	</NuxtLayout>
+    </div>
+</template>
+~~~
+
+## 数据获取
+
+Nuxt带有两个可组合文件和一个内置库，用于在浏览器或服务器环境中执行数据获取。`useFetch` `useAsyncData` `$fetch`
+
+*   useFetch 在组件设置函数中处理数据获取的最直接方法。
+*   \$fetch 适合根据用户交互发出网络请求。
+*   useAsyncData 与\$fetch结合使用，可以提供更精细的控制。
+
+### useFetch
+
+~~~ vue
+<script setup lang='ts'>
+	const { data:count } await useFetch('/api/count')
+</script>
+<template>
+	<p>page visits: {{ count }}</p>
+</template>
+~~~
+
+### $fetch
+
+~~~ vue
+<script setup lang='ts'>
+	async function addTodo(){
+        const todo = await $fetch('/api/todos',{
+            method:'POST',
+            body:{
+                //  data
+            }
+        })
+    }
+</script>
+~~~
+
+### useAsyncData
+
+负责包装异步逻辑，并在解析后返回结果
+
+在某些情况下，使用`useFetch`可组合项不合适，例如：当CMS或第三方提供自己的查询层时。这种情况下，可以使用`useAsyncData`来包装，同时可以保留可组合项提供的好处
+
+~~~ vue
+<script setup lang='ts'>
+	const { data,error } = await useAsyncData('user',()=>{ myGetFunction('user')});
+    const { data,error } = await useAsyncData(()=>{myGetFunctions('user')})
+</script>
+~~~
+
+~~~ vue
+<script setup lang="ts">
+const { id } = useRoute().params
+
+const { data, error } = await useAsyncData(`user:${id}`, () => {
+  return myGetFunction('users', { id })
+})
+</script>
+~~~
+
+可组合项时包装并等待多个请求完成，然后处理结果的好方法
+
+~~~ vue
+<script setup lang="ts">
+const { data: discounts, pending } = await useAsyncData('cart-discount', async () => {
+  const [coupons, offers] = await Promise.all([
+    $fetch('/cart/coupons'),
+    $fetch('/cart/offers')
+  ])
+
+  return { coupons, offers }
+})
+</script>
+~~~
+
+### 返回值
+
+useFetch和useAsync都有以下返回值
+
+*   data 传入的异步函数的结果
+*   pending 指示是否仍在提取数据的布尔值
+*   refresh / execute 可用于刷新函数返回值的函数 在handler函数
+*   clear 可用于将数据设置为未定义，将错误设置为 null，将挂起设置为 false，将状态设置为空闲，并将任何当前挂起的请求标记为取消
+*   status 指示数据请求状态的字符串  idle、pending、success、error
+
+## 状态管理
+
+Nuxt 提供[`useState`](https://nuxt.com/docs/api/composables/use-state)可组合，用于跨组件创建响应式且对 SSR 友好的共享状态。
+
+### 例子
+
+#### 基本用法
+
+~~~ vue
+<script setup lang="ts">
+const counter = useState('counter', () => Math.round(Math.random() * 1000))
+</script>
+<template>
+  <div>
+    Counter: {{ counter }}
+    <button @click="counter++">
+      +
+    </button>
+    <button @click="counter--">
+      -
+    </button>
+  </div>
+</template>
+~~~
+
+### 初始化状态
+
+大多数情况下，需要使用异步解析的数据来初始化状态。可以石笋app.vue组件与`callOnce`来执行此操作
+
+~~~ vue
+<script setup lang="ts">
+const websiteConfig = useState('config')
+
+await callOnce(async () => {
+  websiteConfig.value = await $fetch('https://my-cms.com/api/website-config')
+})
+</script>
+~~~
+
+### 与Pinia一起使用
+
+~~~ shell
+npx nuxi@latest module add pinia
+~~~
+
+stores/website.ts
+
+~~~ ts
+export const useWebsiteStore = defineStore('websiteStore', {
+  state: () => ({
+    name: '',
+    description: ''
+  }),
+  actions: {
+    async fetch() {
+      const infos = await $fetch('https://api.nuxt.com/modules/pinia')
+
+      this.name = infos.name
+      this.description = infos.description
+    }
+  }
+})
+~~~
+
+app.vue
+
+~~~vue
+<script setup lang="ts">
+const website = useWebsiteStore()
+
+await callOnce(website.fetch)
+</script>
+
+<template>
+  <main>
+    <h1>{{ website.name }}</h1>
+    <p>{{ website.description }}</p>
+  </main>
+</template>
+~~~
+
+### 高级用法
+
+composables/locale.ts
+
+~~~ ts
+import type { Ref } from 'vue'
+
+export const useLocale = () => {
+  return useState<string>('locale', () => useDefaultLocale().value)
+}
+
+export const useDefaultLocale = (fallback = 'en-US') => {
+  const locale = ref(fallback)
+  if (import.meta.server) {
+    const reqLocale = useRequestHeaders()['accept-language']?.split(',')[0]
+    if (reqLocale) {
+      locale.value = reqLocale
+    }
+  } else if (import.meta.client) {
+    const navLang = navigator.language
+    if (navLang) {
+      locale.value = navLang
+    }
+  }
+  return locale
+}
+
+export const useLocales = () => {
+  const locale = useLocale()
+  const locales = ref([
+    'en-US',
+    'en-GB',
+    ...
+    'ja-JP-u-ca-japanese'
+  ])
+  if (!locales.value.includes(locale.value)) {
+    locales.value.unshift(locale.value)
+  }
+  return locales
+}
+
+export const useLocaleDate = (date: Ref<Date> | Date, locale = useLocale()) => {
+  return computed(() => new Intl.DateTimeFormat(locale.value, { dateStyle: 'full' }).format(unref(date)))
+}
+~~~
+
+app.vue
+
+~~~ vue
+<script setup lang="ts">
+const locales = useLocales()
+const locale = useLocale()
+const date = useLocaleDate(new Date('2016-10-26'))
+</script>
+
+<template>
+  <div>
+    <h1>Nuxt birthday</h1>
+    <p>{{ date }}</p>
+    <label for="locale-chooser">Preview a different locale</label>
+    <select id="locale-chooser" v-model="locale">
+      <option v-for="locale of locales" :key="locale" :value="locale">
+        {{ locale }}
+      </option>
+    </select>
+  </div>
+</template>
+~~~
 
