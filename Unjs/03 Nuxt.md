@@ -114,6 +114,138 @@ export default defineAppConfig({
 *   页面 (pages/)
 *   布局 (layouts/) [布局配置](https://nuxt.com/docs/guide/directory-structure/layouts)
 
+#### 布局
+
+##### 启用布局
+
+通过添加<NuxtLayout>到app.vue
+
+~~~ vue
+<template>
+	<NuxtLayout>
+    	<NuxtPage/>
+    </NuxtLayout>
+</template>
+~~~
+
+要使用布局：
+
+*   在网页中设置属性layout
+*   设置 <NuxtLayout> 的 name 属性。
+
+>   如果未指定布局，将使用layouts/default.vue
+>
+>   如果应用程序只有一个布局，建议使用app.vue
+>
+>   与其他组件不同，布局必须具有单个根元素以允许过渡，并且根元素不能为<slot/>
+
+#### 默认布局
+
+~/layouts/default.vue
+
+~~~ vue
+<tempalte>
+	<div>
+        <p>test</p>
+        <slot/>
+    </div>
+</tempalte>
+~~~
+
+在布局文件中，页面的内容将显示在<slot/>中。
+
+#### 布局命名
+
+布局名就是布局文件名
+
+~~~ vue
+<script setup lang='ts'>
+definePageMeta({
+    layout:'custom'
+})
+</script>
+~~~
+
+或者使用<NuxtLayout>的name属性
+
+~~~ vue
+<script setup lang='ts'>
+	const layout = 'custom';
+</script>
+<template>
+	<NuxtLayout :name='layout'>
+    	<NuxtPage/>
+    </NuxtLayout>
+</template>
+~~~
+
+如果布局位于嵌套目录中，则布局的名称将基于其自己的路径目录和文件名，并删除重复的段。
+
+| 文件                              | 布局名称          |
+| --------------------------------- | ----------------- |
+| `~/layouts/desktop/default.vue`   | `desktop-default` |
+| `~/layouts/desktop-base/base.vue` | `desktop-base`    |
+| `~/layouts/desktop/index.vue`     | `desktop`         |
+
+#### 动态更改布局
+
+可以使用`setPageLayout`用于动态更改布局
+
+~~~ vue
+<script setup lang='ts'>
+	function enableCustomLayout(){
+        setPageLayout("custom")
+    }
+    definePageMeta({
+        layout:false,
+    })
+</script>
+<template>
+	<div>
+        <button @click=enableCustomLayout>update Layout</button>
+    </div>
+</template>
+~~~
+
+#### 基于每页覆盖布局
+
+pages/index.vue
+
+~~~ vue
+<script setup lang="ts">
+definePageMeta({
+  layout: false,
+})
+</script>
+
+<template>
+  <div>
+    <NuxtLayout name="custom">
+      <template #header> Some header template content. </template>
+
+      The rest of the page
+    </NuxtLayout>
+  </div>
+</template>
+~~~
+
+layouts/custom.vue
+
+~~~ vue
+<template>
+  <div>
+    <header>
+      <slot name="header">
+        Default header content
+      </slot>
+    </header>
+    <main>
+      <slot />
+    </main>
+  </div>
+</template>
+~~~
+
 ### 扩展HTML模板
 
 server/plugins/extend-html.ts
@@ -1074,4 +1206,3 @@ const date = useLocaleDate(new Date('2016-10-26'))
   </div>
 </template>
 ~~~
-
