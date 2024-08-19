@@ -10,11 +10,12 @@
 ## 计划学习
 
 
-*   [ ] Nestjs
+
+*   [x] Nestjs
 *   [ ] typeorm
-*   [ ] H3
-*   [ ] Nitro
-*   [ ] Nuxt
+*   [x] H3
+*   [x] Nitro
+*   [x] Nuxt
 
 
 

@@ -2,9 +2,9 @@
 
 <img src="https://nitro.unjs.io/icon.svg" alt="icon" style="zoom:150%;" />
 
-# Nitor
+# Nitro
 
-Nitor基于H3和许多内置功能构建Web服务器。
+Nitro基于H3和许多内置功能构建Web服务器。
 
 ## 安装、运行和部署
 
