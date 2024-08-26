@@ -207,5 +207,181 @@ fn add(i: i32, j: i32) -> i32 {
 2.   一个值同时只能被一个变量所拥有，或者说一个值只能拥有一个所有者
 3.   当所有者(变量)离开作用域范围时，这个值将被丢第
 
-##### 简单介绍String类型
+~~~ rust
+let s1 = String::from("hello");
+let s2 = s1;
+~~~
 
+当s1被赋予给s2后，rust认为s1不在有效，因此把所有权从s1转移给了s2，s1马上失效。
+
+### 函数传值与返回
+
+~~~ rust
+fn main(){
+    let s = String::from("hello"); // s进入作用域
+    takes_overship(s); // s 的值移动到函数里。后面s将不再有效
+    let x = 5；// x 进入作用域
+    makes_copy(x); // 但是i32是copy的，所以后面可以继续使用
+} // 这里，x先移出作用域，然后是s，但是s的值已经被移走，所以不会有特殊操作
+fn takes_overship(some_string:String){ // some_string
+    println!("{}",some_string);
+} // 这里some_string 移出作用域并调用drop方法，占用的内存被释放
+fn makes_copy(some_integer:i32) { // some_integer进入作用域
+    println!("{}",some_integer);
+} // some_integer移出作用域，不会有特殊操作
+~~~
+
+返回值也有所有权
+
+~~~ rust
+fn main() {
+    let s1 = gives_ownership(); // gives_ovnership 将返回值移给s1
+    let s2 = String::from("hello"); // s2进入作用域
+    let s3 = takes_and_gives_back(s2); // s2被移动到takes_and_gives_back 中，将返回值移给s3.
+}  // s3移出作用域并被丢弃。s2也移出作用域，但已被移走，所以什么也不会发生。s2移出作用域被丢弃。
+fn fives_ownership() -> String { // gives_ownership 将放回置移动给调用它的函数
+    let some_string = String::from("hello"); // some_string 进入作用域
+    some_string // 返回some_string并移出给调用的函数
+}
+// takes_and_gives_back 将传入字符串并返回改值
+fn takes_and_gives_back(a_string:String) -> String { // a_string 进入作用域
+    a_string // 返回a_string并移出给调用函数
+}
+~~~
+
+所有权避免了内存的不安全性，但是，总把一个值传来传去来使用，让语言表达变得啰嗦。可以使用`引用与借用来解决`
+
+## 引用与借用
+
+获取某个变量的引用，称之为**借用**
+
+### 引用与解引用
+
+常规引用是一个指针类型，指向了对象存储的内存地址
+
+~~~ rust
+fn main() {
+    let x = 5;
+    let y = &x;
+    assert_eq(5,x);
+    assert_eq(5,*y);
+}
+~~~
+
+变量x存放了一个i32值5.y是x的一个引用。使用\*y解出来的值(解引用)。一旦解引用了，就可以访问y所指向的整型值并可以与5做比较。
+
+### 不可变引用
+
+~~~ rust
+fn main() {
+    let s1 = String::from("hello");
+    let len = calculate_length(&s1);
+    println!("{} {}",s1,len);
+}
+fn calculate_length(s:&String) -> usize {
+    s.len();
+}
+~~~
+
+1.   无需先通过函数参数传入所有权，然后在通过函数返回传出所有权，代码更加简洁
+2.   calculate_length 的参数 s 类型从String 变成 &String
+
+>   [!caution]
+>
+>   但是无法通过这个引用，来<del>修改借用的变量</del>，因为这是一个不可变引用。
+>
+>   ~~~ rust
+>   fn main() {
+>       let s = String::from("hello");
+>       change(&s);
+>   }
+>   fn change(some_string:&String) {
+>       some_string.push_str(",world");
+>   }
+>   ~~~
+
+### 可变引用
+
+~~~ rust
+fn main() {
+	let mut s = String::from("hello");
+    change(&mut s);
+}
+fn change(some_string:&mut String) {
+    some_string.push_str(",world");
+}
+~~~
+
+首先声明s是可变的类型，其次创建可变引用`&mut s`和接受可变引用参数`some_string:&mut String`的函数
+
+==可变引用只能存在一个==，同一个作用域，特定的数据只能有一个可变引用
+
+>   [!caution] 
+>
+>   ~~~ rust
+>   let mut s = String::from("hello");
+>   let r1 = &mut s;
+>   let r2 = &mut s;
+>   println!("{} {}",r1,r2);
+>   ~~~
+
+编译器这样做的原因是为了避免数据竞争
+
+*   两个或更多的指针同时访问同一个数据
+*   至少有一个指针被用来写入数据
+*   没有同步数据访问的机制
+
+手动限制变量的作用域，来避免数据竞争
+
+~~~ rust
+let mut s = String::from("hello");
+{
+    let r1 = &mut s;
+} // 这里r1离开了作用域，所以完全可以创建一个新的引用
+let r2 = &mut s;
+~~~
+
+==可变引用与不可变引用不能同时存在==
+
+~~~ rust
+let mut s = String::from("hello");
+let r1 = &s;
+let r2 = &s;
+let r3 = &mut s; // 报错，无法借用可变，因为它已经被借用不可变
+~~~
+
+为了防止数据污染
+
+>   [!tip]
+>
+>   在新的编译器中，引用作用域的结束未知冲花括号变成最后一次使用的位置。这种编译器优化行为，称为**NLL**(**Non-Lexical Lifetimes**)。因此，在不可变引用最后一次使用后，可以创建可变引用。
+
+### 悬垂引用
+
+悬垂引用也叫做悬垂指针，意思是指针指向某个值后，这个值被释放了，但是指针仍然存在，其指向的内存可能不存在任何值或者已经被其他变量使用。
+
+~~~ rust
+fn main() {
+    let reference_to_noting = dangle();
+}
+fn dangle() -> &String {
+    let s = String::from("hello");
+    &s;
+}
+~~~
+
+报错：该函数返回了一个借用的值，但是已经找不到它所借用值的来源
+
+解决：
+
+~~~ rust
+fn no_dangle() -> String {
+    let s = String::from("hello");
+    s   // String的所有权被转移给外面的调用者
+}
+~~~
+
+>   [!tip]
+>
+>   *   同一时刻，只能拥有要么一个可变引用，要么任意多个不可变引用
+>   *   引用必须总是有效

@@ -243,7 +243,22 @@ end
 
 
 
+>   [!note]
+>
+>   note
 
+>   [!tip]
+>
+>   tip
 
+>   [!important]
+>
+>   important
 
+>   [!warning]
+>
+>   warning
 
+>   [!caution]
+>
+>   caution
