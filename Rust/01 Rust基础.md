@@ -388,3 +388,492 @@ fn no_dangle() -> String {
 
 ## 复合类型
 
+#### 切片 (slice)
+
+对于字符串而言，切片剧场对String类型的引用
+
+~~~ rust
+let s = String::from("hello world");
+let hello = &s[0..5];
+let world = &s[6..11];
+~~~
+
+**[开始索引..终止索引]**，其中开始索引是切片的第一个元素的索引未知，终止索引是最后一个元素后面的索引位置，也就是**左闭右开区间**。
+
+从索引0开始
+
+~~~ rust
+let s = String::from("hello");
+let slice = &s[0..2];
+let slice = &s[..2]; // 这两个是等效的
+~~~
+
+包含到String的最后一个字符
+
+~~~ rust
+let s = String::from("hello");
+let len = s.len();
+let slice = &s[4..len];
+let slice = &s[4..]; // 这两个是等效的
+~~~
+
+截取完整的String切片
+
+~~~ rust
+let s = String::from("hello");
+let len = s.len();
+let slice = &s[0..len];
+let slice = &s[..]; // 这两个是等效的
+~~~
+
+>   [!caution]
+>
+>   在字符串中使用中文时，切片的索引必须落在字符之间的边界位置，也就是UTF8字符的边界，例如中文在UTF8占用三个字节
+>
+>   ~~~ rust
+>   let s = "中国人";
+>   let a = &s[0..2];
+>   println!("{}",a);
+>   ~~~
+>
+>   <span style="color:red">报错!</span> 因为只取s字符串的前两个字节，但是汉字占用三个字节，因此没有落在边界处，此时程序直接崩溃退出。
+
+==字符串切片的类型是**&str**。==
+
+>   [!warning]
+>
+>   当已经有了一个可变借用时，就无法在拥有不可变借用！
+>
+>   ~~~ rust
+>   fn main(){
+>       let mut s = String::from("hello world");
+>       let word = first_word(&s);
+>       s.clear();  // error
+>       println!("{}",word);
+>   }
+>   ~~~
+>
+>   <span style="color:red">报错!</span> 因为clear需要一个可变借用，而之后的println!又需要一个不可变借用，因此编译无法通过。
+
+#### 其他切片
+
+切片是对集合的部分引用，其他集合类型也有切片
+
+~~~ rust
+let a = [1,2,3,4,5];
+let slice = &a[1..3];
+assert_eq!(slice,&[2,3]);
+~~~
+
+==字符串字面量是切片==
+
+### String 字符串
+
+Rust中的字符是Unicode类型，因此每个字符占据4个内存空间，但是字符串是不一样，字符串是UTF8编码，也就是说，字符串中的字符所占的字节数是变化的(1\-4)，这样有利于大幅降低所占的内存空间。
+
+#### String和&str的转换
+
+**&str->String**
+
+*   String::from(“hello,world”);
+*   “hello,world”.to_string();
+
+**String->&str**
+
+~~~ rust
+fn main(){
+    let s = String::from("hello,world");
+    say_hello(&s);
+    say_hello(&s[..]);
+    say_hello();
+}
+fn say_hello(s:&str) {
+    println!("{}",s);
+}
+~~~
+
+#### 字符串索引
+
+==无法在Rust中使用索引获取字符串的某个字符或字串==
+
+字符串的底层数据存储是一个[u8]字节数组,对于英文来说，一个字母是一个字节，但是对于中文和一些其他语言的字符，一个字符占用三个字节，这种情况下，访问一个字节没有意义。
+
+### 字符串操作
+
+#### 追加 push
+
+使用`push`方法追加字符char，也可以使用`push_str`方法追加字符串字面量。
+这两种方法都是在原有的字符串上追加，不会返回新 的字符串，所以字符串变量必须由`mut`关键字修饰。
+
+~~~ rust
+let mut s = String::from("hello");
+s.push_str("world");
+s.push('!');
+~~~
+
+#### 插入 insert
+
+*   insert 插入单个字符
+*   insert_str 插入字符串字面量
+
+需要两个参数
+
+1.   插入位置的索引
+2.   插入的字符(串)
+
+~~~ rust
+let mut s = String::from("hello rust!");
+s.insert(5,',');
+s.insert_str(6,"love");
+~~~
+
+#### 替换
+
+##### replace
+
+适用于String和&str类型，接收两个参数
+
+1.   被替换的字符串
+2.   新的字符串
+
+该方法返回一个新的字符串，而不是操作原来的字符串
+
+~~~ rust
+fn main(){
+    let string_replace = String::from("I like rust!!!")；
+    let new_string_replace = string_replace.replace("rust","RUST");
+}
+~~~
+
+##### replacen
+
+前两个参数和replace一样，还接收第三个参数：替换的个数
+
+##### replace_range
+
+这个方法只适用于String类型，接收两个参数
+
+1.   替换的字符串的范围
+2.   新的字符串
+
+该方法直接操作原来的字符串，不会返回新的字符串，需要mut关键字修饰。
+
+~~~ rust
+let mut string_replace_range = String::from("I like rust");
+string_replace_range.replace_range(7..8,"R");
+~~~
+
+#### 删除 Delete
+
+##### pop 删除并返回字符串的最后一个字符
+
+**操作原来的字符串**。但是存在返回值，返回值是一个Option类型，如果字符串为空，则返回None
+
+##### remove 删除并返回字符串中指定位置的字符
+
+**操作原来的字符**。
+
+##### truncate 删除字符串中从指定位置开始到结尾的全部字符
+
+**直接操作原来的字符**。
+
+##### clear 清空字符串
+
+**操作原来的字符**。调用后，相当于truncate方法参数为0的时候
+
+#### 连接 concatenate
+
+##### 使用+或者+=连接字符串
+
+使用+或者+=连接字符串，要求右边的参数必须为字符串的切片引用类型。当调用+的操作符时，相当于调用了std::string标准库中的`add`方法。第二个参数是一个引用类型。在使用+时，必须传递切片引用类型，不弄直接传递String类型，+是返回一个新的字符串。所以变量声明可以不需要使用mut关键字修饰。
+
+~~~ rust
+let string_append = String::from("hello ");
+let string_rust = String::from("rust");
+let result = string_append + &string_rust; // string_rust 的所有权被转移走了，后面不能再使用string_append
+let mut result = result + "!"; // result + ! 中的result是不可变的
+~~~
+
+##### 使用format！ 连接字符串
+
+适用于String和&str，用法和print!用法类似
+
+~~~ rust
+let s1 = "hello";
+let s2 = String::from("rust");
+let s = format!("{} {}",s1,s2);
+~~~
+
+### 字符串转义
+
+可以通过转义的方式`\`输出ASCII和Unicode字符
+
+~~~ rust
+fn main() {
+    // 通过 \ + 字符的十六进制表示，转义输出一个字符
+    let byte_escape = "I'm writing \x52\x75\x73\x74!";
+    println!("What are you doing\x3F (\\x3F means ?) {}", byte_escape);
+
+    // \u 可以输出一个 unicode 字符
+    let unicode_codepoint = "\u{211D}";
+    let character_name = "\"DOUBLE-STRUCK CAPITAL R\"";
+
+    println!(
+        "Unicode character {} (U+211D) is called {}",
+        unicode_codepoint, character_name
+    );
+
+    // 换行了也会保持之前的字符串格式
+    // 使用\忽略换行符
+    let long_string = "String literals
+                        can span multiple lines.
+                        The linebreak and indentation here ->\
+                        <- can be escaped too!";
+    println!("{}", long_string);
+}
+~~~
+
+~~~ rust
+fn main() {
+    println!("{}", "hello \\x52\\x75\\x73\\x74");
+    let raw_str = r"Escapes don't work here: \x3F \u{211D}";
+    println!("{}", raw_str);
+
+    // 如果字符串包含双引号，可以在开头和结尾加 #
+    let quotes = r#"And then I said: "There is no escape!""#;
+    println!("{}", quotes);
+
+    // 如果还是有歧义，可以继续增加，没有限制
+    let longer_delimiter = r###"A string with "# in it. And even "##!"###;
+    println!("{}", longer_delimiter);
+}
+~~~
+
+### 操作UTF8字符串
+
+遍历Unicode字符
+
+~~~ rust
+for c in "中国人".chars() {
+    println!("{}",c);
+}
+~~~
+
+遍历字符串底层字节数组
+
+~~~ rust
+for b in "中国人".bytes() {
+    println!("{}",b);
+}
+~~~
+
+获取字串，可以使用 **utf8_slice** 库
+
+### 元组
+
+元组是由多种类型组合到一起形成的，元组的长度固定，元组中元素的顺序也是固定的。
+
+~~~ rust
+let tup:(i32,f64,u8) = (500,6.4,1);
+~~~
+
+#### 使用模式匹配解构元组
+
+~~~ rust
+let tup = (500,6.4,1);
+let (x,y,z) = tup;
+~~~
+
+#### 使用`.`来访问元组
+
+~~~ rust
+let x:(i32,f64,u8) = (500,6.4,1);
+let five_hundred = x.0;
+let six_point_four = x.1;
+let one = x.2;
+~~~
+
+>   [!tip]
+>
+>   可以使用元组再函数中返回多个值
+>
+>   ~~~ rust
+>   fn calculate_length(s:String) -> (String,usize) {
+>       let length = s.len();
+>       (s,length)
+>   }
+>   ~~~
+>
+>   calculate_length函数接收第一个参数的所有权，然后计算长度，接着把字符串所有权和字符串长度返回给调用。
+
+但是元组有一个巨大的缺陷：**不具备任何清晰的含义**
+
+可以使用`元组结构体`来解决这个问题。
+
+### 结构体
+
+结构体和元组有些相像：都是由多种类型组合而成。但是与元组不同的是，结构体可以为内部的每一个字段起一个富有含义的名称。
+
+*   通过关键字 `struct` 定义
+*   一个清晰明确的结构体名称
+*   几个有名字的结构体字段
+
+~~~ rust
+struct User {
+    active:bool,
+    username:String,
+    emial:String,
+    sign_in_count:u64
+}
+~~~
+
+#### 创建结构体实例
+
+~~~ rust
+let user1 = User {
+    emial:String::from("xjuunn@gmail.com"),
+    username:String::from("Junhsiun"),
+    active:true,
+    sign_in_count:1
+}
+~~~
+
+1.   初始化时，每个字段都需要初始化
+2.   处处话时，字段顺序不需要和结构体定义时一致
+
+#### 访问结构体字段
+
+~~~ rust
+let mut  user1 = User {
+    ... // 省略了
+}
+user.email = String::from("xjuunn@163.com");
+~~~
+
+想要修改结构体实例的字段，必须将结构体声明为可变的。Rust不支持将结构体某个字段标记为可变。
+
+#### 简化结构体创建
+
+~~~ rust
+fn build_user(email:String,username:String) -> User {
+    User {
+        email,   //  和js中一样
+        username,
+        active:true,
+        sign_in_count:1,
+    }
+}
+~~~
+
+#### 结构体更新语法
+
+根据已有的结构体实例，创建新的结构体实例
+
+例如：根据已有的user1实例创建user2：
+
+~~~ rust
+let user2 = User {
+    email:String::from("xjuunn@qq.com"),
+    ...user1
+}
+~~~
+
+只对email进行赋值，剩下的通过结构体更新语法..user1即可完成
+
+`..`语法表明，凡是没有显式声明的字段，全部从user1中自动获取。需要注意的是，..user1必须再结构体尾部使用。
+
+>   [!warning]
+>
+>   结构体更新语法和`=`非常相像，因此在上面的代码中，user1的部分字段的所有权被转移到了user2中：username字段发生了转移，作为结果，user1无法在被使用。
+>
+>   值得注意的是：username所有权转移给了user2，导致user1无法在被使用，但是不代表user1内部的其他字段不能被继续使用。
+
+==把结构体中具有所有权的字段转移出去，将无法再访问该字段，但是可以访问其他字段==
+
+#### 元组结构体
+
+结构体必须要有名称，但是结构体的字段可以没有名称，这种结构体长得很像元组，因此被称为元组结构体。
+
+~~~ rust
+struct Color(i32,i32,i32);
+struct Point(i32,i32,i32);
+let black = Color(0,0,0);
+let origin = Point(0,0,0);
+~~~
+
+元组结构体希望有一个整体的名称，但是又不关心字段名称。
+
+#### 单元结构体
+
+没有任何字段和属性的结构体
+
+如果定义一个类型，但是不关心该类型的内容，只关心他的行为，就可以使用单元结构体。
+
+~~~ rust
+struct AlwaysEqual;
+let subject = AlwaysEqual;
+// 不关心AlwaysEqual的字段数据，只关心它的行为，因此将它声明为单元结构体，然后再实现他的某个特征
+impl SomeTrait for AlwaysEqual {
+    
+}
+~~~
+
+#### 结构体数据的所有权
+
+如果要在结构体中使用借用的数据，需要引入生命周期的概念，简而言之，生命周期能够确保结构体的作用范围要比借用的数据的作用范围小。详见生命周期。
+
+#### 使用#[derive(Debug)]来打印结构体的信息
+
+~~~ rust
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rect1 is {:?}", rect1);
+}
+~~~
+
+>   $ cargo run
+>   rect1 is Rectangle { width: 30, height: 50 }
+
+或者使用{:#?}可以纵向输出
+
+>   rect1 is Rectangle {
+>       width: 30,
+>       height: 50,
+>   }
+
+也可以使用dbg!输出
+
+~~~ rust
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let scale = 2;
+    let rect1 = Rectangle {
+        width: dbg!(30 * scale),
+        height: 50,
+    };
+
+    dbg!(&rect1);
+}
+~~~
+
+>   $ cargo run
+>   [src/main.rs:10] 30 * scale = 60
+>   [src/main.rs:14] &rect1 = Rectangle {
+>       width: 60,
+>       height: 50,
+>   }
