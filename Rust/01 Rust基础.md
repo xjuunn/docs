@@ -93,7 +93,7 @@ fn main(){
 
 ### 类型推导与标注
 
-Rust是一门静态类型的语言，编译器必须在编译期直到所有变量的类型，Rust会根据变量的值和上下文中使用方式，自动推导出变量的类型，但在某些情况下，需要手动介于一个类型标注。
+Rust是一门静态类型的语言，编译器必须在编译期知道所有变量的类型，Rust会根据变量的值和上下文中使用方式，自动推导出变量的类型，但在某些情况下，需要手动介于一个类型标注。
 
 ~~~ rust
 lst guess = "42".parse().expect("Not a number");
@@ -142,7 +142,7 @@ for i in 1..=5 {
 }
 ~~~
 
->   序列只允许用于数字火字符的类型，原因是他们连续
+>   序列只允许用于数字类型，原因是他们连续
 
 ### 单元类型
 
@@ -880,4 +880,152 @@ fn main() {
 
 ### 枚举
 
- 
+通过列举可能的成员来定义一个枚举类型
+
+~~~ rust
+enum PokerSuit {
+    Clubs,
+    Spades,
+    Diamonds,
+    Hearts,
+}
+~~~
+
+#### 枚举值
+
+~~~ rust
+let heart = PokerSuit::Hearts;
+let diamond = PokerSuit::DIamonds;
+~~~
+
+使用
+
+~~~ rust
+fn main() {
+    let heart = PokerSuit::Hearts;
+    let diamond = PokerSuit::Diamonds;
+    print_suit(heart);
+    print_suit(diamond);
+}
+fn print_suit(card:PokerSuit) {
+	// 需要在定义enum PokerSuit的上面添加 #[derive(Debug)] 否则报card没有实现Debug
+    println!("{:?}",card)
+}
+~~~
+
+#### 带有类型的枚举值
+
+~~~ rust
+enum PokerCard {
+    Clubs(u8),
+    Spades(u8),
+    Diamonds(char),
+    Hearts(char),
+}
+fn main() {
+    let c1 = PokerCard::Spades(5);
+    let c2 = PokerCard::Diamonds('A')
+}
+~~~
+
+==任何类型的数据都可以放入枚举成员人中==
+
+~~~ rust
+enum Message {
+    Quit,
+    Move {x,i32,y:i32},
+    Write(String),
+    ChangeColor(i32,i32,i32),
+}
+fn main() {
+    let m1 = Message::Quit;
+    let m2 = Message:Move[x:1,y:1];
+    let m3 = Message::ChangeColor(255,255,0);
+}
+~~~
+
+*   Quit 没有任何关联数据
+*   Move 包含一个匿名结构体
+*   Write 包含一个字符串
+*   ChangeColor 包含三个i32
+
+### 数组
+
+Rust中，最常用的数组有两种
+
+1.   array 数组 固定长度 速度快
+2.   Vector 动态数组 动态增长 性能低
+
+array数组：多个类型相同的元素一次排列
+
+*   长度固定
+*   元素必须有相同的类型
+*   依次线性排列
+
+#### 创建数组
+
+~~~ rust
+fn main() {
+    let a = [1,2,3,4,5];
+}
+~~~
+
+>   [!tip]
+>
+>   *   array 是存储在栈上的
+>   *   Vector 是存储在堆上的
+
+#### 为数组声明类型
+
+~~~ rust
+let a: [i32;5] = [1,2,3,4,5];
+~~~
+
+*   i32 是元素类型
+*   5 是数组长度
+
+还可以使用语法初始化一个某个重复出现n次的数组
+
+~~~ rust
+let a = [3;5]; // 包含五个元素，值都是3
+~~~
+
+>   [!caution]
+>
+>   如果要在数组中初始化创建多个复杂类型
+>
+>   ~~~ rust
+>   let array = [String::from("rust");8];
+>   ~~~
+>
+>   <span style="color:red">报错: </span>let array = [3;5] 底层是通过copy出来的的，但是只有基本类型才能copy，复杂类型没有深拷贝，只能一个个创建
+>
+>   比较优雅的解决方法
+>
+>   ~~~ rust
+>   let array:[String;8] = std::array::from_fn(|_i| String::from("rust"));
+>   ~~~
+
+#### 访问数组元素
+
+~~~ rust
+fn main() {
+    let a = [5,4,3,2,1];
+    let first = a[0];
+    let second = a[1];
+}
+~~~
+
+#### 数组切片
+
+~~~ rust
+let a:[i32;5] = [1,2,3,4,5];
+let slice:&[i32] = &a[1..3]
+~~~
+
+上面的数组切片slice的类型是&[i32]，与之对比，数组的类型是[i32;5]
+
+*   且前的长度可以与数组不同，并不是固定的，而是取决于使用时指定的其实位置和结束为主
+*   创建切片的代价非常小，因为切片只是针对底层数组的一个引用
+*   切片类型[T]拥有不固定的大小，而切片引用类型&[T]则具有固定的大小，因为Rust很多时候都需要固定大小的数据类型，因此&[T]更有用，&str字符串切片也是同理
+
