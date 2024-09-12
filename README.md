@@ -20,6 +20,11 @@
 *   [x] Nitro
 *   [x] Nuxt
 *   [ ] Rust
+*   [ ] Spring Boot Security
+*   [ ] Lombok
+*   [ ] Spring Boot Swagger/OpenAPI
+*   [ ] MyBatis plus
+*   [ ] MapStruct
 
 
 
