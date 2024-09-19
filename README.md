@@ -22,7 +22,7 @@
 *   [ ] Rust
 *   [ ] Spring Boot Security
 *   [ ] Lombok
-*   [ ] Spring Boot Swagger/OpenAPI
+*   [x] Spring Doc
 *   [ ] MyBatis plus
 *   [ ] MapStruct
 
