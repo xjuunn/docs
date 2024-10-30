@@ -111,7 +111,7 @@ let txt = computed(() => {
 
 ### 生命周期
 
-![生命周期](https://cn.vuejs.org/assets/lifecycle.DLmSwRQE.png)
+![组件生命周期图示](https://cn.vuejs.org/assets/lifecycle_zh-CN.W0MNXI0C.png)
 
 ~~~ js
 import { onMounted } from "vue";

@@ -25,6 +25,7 @@
 *   [x] Spring Doc
 *   [ ] MyBatis plus
 *   [ ] MapStruct
+*   [ ] supabase
 
 
 
