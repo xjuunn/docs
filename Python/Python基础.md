@@ -5,7 +5,8 @@
 ### 注释
 
 ```python
-[[单行注释用井号表示]]print("Hello,Python!")'''第三注释第四注释'''"""注释"""
+# 单行注释用井号表示
+print("Hello,Python!")
 ```
 
 ### 行与缩进
@@ -15,7 +16,10 @@ python最具特色的就是使用缩进来表示代码块，不需要使用大�
 缩进的空格数是可变的，但是同一个代码块的语句不许包含相同的缩进空格数
 
 ```python
-if True:    print ("True")if False:    print ("False")
+if True:
+    print ("True")
+if False:
+    print ("False")
 ```
 
 缩进不一致会导致运行错误
@@ -25,13 +29,16 @@ if True:    print ("True")if False:    print ("False")
 python通常是一行写完一条语句，但如果语句很长，可以使用反斜杠\来实现多行语句
 
 ```python
-total = item_one + \        item_two + \        item_three
+total = item_one + \
+item_two + \
+item_three
 ```
 
 在[],{},()中的语句，不需要使用反斜杠\
 
 ```python
-total = ['ttem_one','item_two','item_three',        'item_four','item_five']
+total = ['ttem_one','item_two','item_three',
+         'item_four','item_five']
 ```
 
 ### 数字(Number)类型
@@ -57,7 +64,9 @@ python中数字有四种类型：整数，布尔型，浮点数和复数。
 - 字符串的截取的语法格式：变量[头下标:尾下标:步长]
   
     ```python
-    word = '字符串'sentence = '这是一个句子'paragraph = """这是一个段落，可以由多行组成"""
+    word = '字符串'
+    sentence = '这是一个句子'
+    paragraph = """这是一个段落，可以由多行组成"""
     ```
     
     ```python
