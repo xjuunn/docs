@@ -72,7 +72,7 @@ Python3 支持int、 float、bool、complex（复数）。
 
 内置的type()函数可以用来查询变量所指的对象类型。
 
-Python3 中，bool是int的子类，True和False可以和数字相加，True==1，False==0会返回True，但可以通过is来判断类型。
+Python3 中，bool是int的子类，True和False可以和数字相加，True\=\=1，False\=\=0会返回True，但可以通过is来判断类型。
 
 当指定一个值时，Number对象就会创建
 
@@ -97,7 +97,13 @@ del vardel var_a,var_b
 ### 数值运算
 
 ```python
->>> 5 + 4  # 加法9>>> 4.3 - 2 # 减法2.3>>> 3 * 7  # 乘法21>>> 2 / 4  # 除法，得到一个浮点数0.5>>> 2 // 4 # 除法，得到一个整数0>>> 17 % 3 # 取余2>>> 2 ** 5 # 乘方32
+>>> 5 + 4  # 加法9
+>>> 4.3 - 2 # 减法2.3
+>>> 3 * 7  # 乘法21
+>>> 2 / 4  # 除法，得到一个浮点数0.5
+>>> 2 // 4 # 除法，得到一个整数0
+>>> 17 % 3 # 取余2
+>>> 2 ** 5 # 乘方32
 ```
 
 - python可以同时为多个变量赋值，如a,b = 1,2
@@ -114,7 +120,6 @@ del vardel var_a,var_b
     ---
     
     ###### String 字符串
-    
 
 python中的字符串用单引号或者双引号括起来，同时使用反斜杠转义特殊字符
 
@@ -128,7 +133,7 @@ list是python中使用最频繁的数据类型。
 
 列表是写在方括号[]之间、用逗号隔开的元素列表。
 
-和字符串一样，列表同样可以被索引和截取，列表被截取后返回一个包含所需严肃的新列表
+和字符串一样，列表同样可以被索引和截取，列表被截取后返回一个包含所需元素的新列表
 
 列表截取的语法格式如下
 
@@ -148,13 +153,21 @@ list是python中使用最频繁的数据类型。
 元祖与列表类似，不同之处在于元组的元素不能修改。元组写在小括号()里，元素之间用逗号隔开。元组中的元素类型也可以不相同：
 
 ```python
-tuple = ( 'abcd', 786 , 2.23, 'runoob', 70.2  )tinytuple = (123, 'runoob')print (tuple)             # 输出完整元组print (tuple[0])          # 输出元组的第一个元素print (tuple[1:3])        # 输出从第二个元素开始到第三个元素print (tuple[2:])         # 输出从第三个元素开始的所有元素print (tinytuple * 2)     # 输出两次元组print (tuple + tinytuple) # 连接元组
+tuple = ( 'abcd', 786 , 2.23, 'test', 70.2  )
+tinytuple = (123, 'test')
+print (tuple)		    # 输出完整元组
+print (tuple[0])		# 输出元组的第一个元素
+print (tuple[1:3])        # 输出从第二个元素开始到第三个元素
+print (tuple[2:])         # 输出从第三个元素开始的所有元素
+print (tinytuple * 2)     # 输出两次元组
+print (tuple + tinytuple) # 连接元组
 ```
 
 构造包含0个或1个元素的元组比较特殊，所以有一些额外的语法规则
 
 ```python
-tup1 = () [[空元组]]tup2 = (20,) [[一个元素，需要在元素后面添加逗号]]
+tup1 = () # 空元组
+tup2 = (20,) # 一个元素，需要在元素后面添加逗号
 ```
 
 string、list和tuple都属于sequence(序列)。
@@ -181,7 +194,21 @@ parame = {value01,value02,....}
 ```
 
 ```python
-sites = {'Google', 'Taobao', 'Runoob', 'Facebook', 'Zhihu', 'Baidu'}print(sites)   # 输出集合，重复的元素被自动去掉# 成员测试if 'Runoob' in sites :    print('Runoob 在集合中')else :    print('Runoob 不在集合中')# set可以进行集合运算a = set('abracadabra')b = set('alacazam')print(a)print(a - b)     # a 和 b 的差集print(a | b)     # a 和 b 的并集print(a & b)     # a 和 b 的交集print(a ^ b)     # a 和 b 中不同时存在的元素
+sites = {'Google', 'Taobao', 'Runoob', 'Facebook', 'Zhihu', 'Baidu'}
+print(sites)   # 输出集合，重复的元素被自动去掉
+# 成员测试
+if 'Runoob' in sites :
+    print('Runoob 在集合中')
+else :
+    print('Runoob 不在集合中')
+# set可以进行集合运算
+a = set('abracadabra')
+b = set('alacazam')
+print(a)
+print(a - b)     # a 和 b 的差集
+print(a | b)     # a 和 b 的并集
+print(a & b)     # a 和 b 的交集
+print(a ^ b)     # a 和 b 中不同时存在的元素
 ```
 
 ---
@@ -199,13 +226,23 @@ sites = {'Google', 'Taobao', 'Runoob', 'Facebook', 'Zhihu', 'Baidu'}print(sites)
 在同一个字典中，键必须是唯一的。
 
 ```python
-dict = {}dict['one'] = "1 - 菜鸟教程"dict[2]     = "2 - 菜鸟工具"tinydict = {'name': 'runoob','code':1, 'site': 'www.runoob.com'}print (dict['one'])       # 输出键为 'one' 的值print (dict[2])           # 输出键为 2 的值print (tinydict)          # 输出完整的字典print (tinydict.keys())   # 输出所有键print (tinydict.values()) # 输出所有值
+dict = {}
+dict['one'] = "1 - 菜鸟教程"
+dict[2]     = "2 - 菜鸟工具"
+tinydict = {'name': 'runoob','code':1, 'site': 'www.runoob.com'}
+print (dict['one'])       # 输出键为 'one' 的值
+print (dict[2])           # 输出键为 2 的值
+print (tinydict)          # 输出完整的字典
+print (tinydict.keys())   # 输出所有键
+print (tinydict.values()) # 输出所有值
 ```
 
 构造函数dict()可以直接从键值对序列中构建字典如下：
 
 ```python
->>> dict([('Runoob', 1), ('Google', 2), ('Taobao', 3)]){'Runoob': 1, 'Google': 2, 'Taobao': 3}>>> {x: x**2 for x in (2, 4, 6)}{2: 4, 4: 16, 6: 36}>>> dict(Runoob=1, Google=2, Taobao=3){'Runoob': 1, 'Google': 2, 'Taobao': 3}
+>>> dict([('Runoob', 1), ('Google', 2), ('Taobao', 3)]){'Runoob': 1, 'Google': 2, 'Taobao': 3}
+>>> {x: x**2 for x in (2, 4, 6)}{2: 4, 4: 16, 6: 36}
+>>> dict(Runoob=1, Google=2, Taobao=3){'Runoob': 1, 'Google': 2, 'Taobao': 3}
 ```
 
 {x: x**2 for x in (2,4,6)}该代码使用的是字典的推导式 ：[Python 推导式](https://www.runoob.com/python3/python-comprehensions.html)

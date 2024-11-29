@@ -25,7 +25,8 @@
 *   [x] Spring Doc
 *   [ ] MyBatis plus
 *   [ ] MapStruct
-*   [ ] supabase
+*   [x] supabase
+*   [ ] Django
 
 
 
