@@ -239,7 +239,7 @@ fn main() {
     let s2 = String::from("hello"); // s2进入作用域
     let s3 = takes_and_gives_back(s2); // s2被移动到takes_and_gives_back 中，将返回值移给s3.
 }  // s3移出作用域并被丢弃。s2也移出作用域，但已被移走，所以什么也不会发生。s2移出作用域被丢弃。
-fn fives_ownership() -> String { // gives_ownership 将放回置移动给调用它的函数
+fn gives_ownership() -> String { // gives_ownership 将放回置移动给调用它的函数
     let some_string = String::from("hello"); // some_string 进入作用域
     some_string // 返回some_string并移出给调用的函数
 }
@@ -739,7 +739,7 @@ let user1 = User {
 ~~~
 
 1.   初始化时，每个字段都需要初始化
-2.   处处话时，字段顺序不需要和结构体定义时一致
+2.   初始化时，字段顺序不需要和结构体定义时一致
 
 #### 访问结构体字段
 
@@ -774,13 +774,13 @@ fn build_user(email:String,username:String) -> User {
 ~~~ rust
 let user2 = User {
     email:String::from("xjuunn@qq.com"),
-    ...user1
+    ..user1
 }
 ~~~
 
 只对email进行赋值，剩下的通过结构体更新语法..user1即可完成
 
-`..`语法表明，凡是没有显式声明的字段，全部从user1中自动获取。需要注意的是，..user1必须再结构体尾部使用。
+`..`语法表明，凡是没有显式声明的字段，全部从user1中自动获取。需要注意的是，..user1必须在结构体尾部使用。
 
 >   [!warning]
 >
@@ -998,7 +998,7 @@ let a = [3;5]; // 包含五个元素，值都是3
 >   let array = [String::from("rust");8];
 >   ~~~
 >
->   <span style="color:red">报错: </span>let array = [3;5] 底层是通过copy出来的的，但是只有基本类型才能copy，复杂类型没有深拷贝，只能一个个创建
+>   <span style="color:red">报错: </span>let array = [3;5] 底层是通过copy出来的，但是只有基本类型才能copy，复杂类型没有深拷贝，只能一个个创建
 >
 >   比较优雅的解决方法
 >
@@ -1025,7 +1025,7 @@ let slice:&[i32] = &a[1..3]
 
 上面的数组切片slice的类型是&[i32]，与之对比，数组的类型是[i32;5]
 
-*   且前的长度可以与数组不同，并不是固定的，而是取决于使用时指定的其实位置和结束为主
+*   且前的长度可以与数组不同，并不是固定的，而是取决于使用时指定的起始位置和结束为主
 *   创建切片的代价非常小，因为切片只是针对底层数组的一个引用
 *   切片类型[T]拥有不固定的大小，而切片引用类型&[T]则具有固定的大小，因为Rust很多时候都需要固定大小的数据类型，因此&[T]更有用，&str字符串切片也是同理
 
