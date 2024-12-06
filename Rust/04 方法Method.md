@@ -127,7 +127,7 @@ impl Rectangle {
 enum Message {
     Quit,
     Move {x:i32,y:i32},
-    Width(String),
+    Write(String),
     ChangeColor(i32,i32,i32),
 }
 impl Message {
