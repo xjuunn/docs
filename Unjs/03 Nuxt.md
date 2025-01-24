@@ -1206,3 +1206,50 @@ const date = useLocaleDate(new Date('2016-10-26'))
   </div>
 </template>
 ~~~
+
+### 连接数据库
+
+~/server/utils/mysql.ts
+
+~~~ ts
+import mysql, { RowDataPacket, FieldPacket } from 'mysql2/promise';
+
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: '123123',
+  database: 'test',
+});
+
+export const query = async <T>(sql: string, values?: any[]): Promise<T[]> => {
+  const [rows]: [RowDataPacket[], FieldPacket[]] = await pool.execute(sql, values);
+  return rows as T[];
+};
+
+export const close = async () => {
+  await pool.end();
+};
+~~~
+
+~/server/api/test
+
+~~~ ts
+import { query } from "../utils/mysql";
+
+type User = {
+  id: number,
+  name: string,
+  age: number,
+}
+
+export default defineEventHandler(async (event) => {
+  try {
+    const users = await query<User>('SELECT * FROM user');
+    return users[0].age;
+  } catch (error) {
+    console.error('Error querying the database:', error);
+    return { error: 'Error querying the database' };
+  }
+});
+~~~
+
