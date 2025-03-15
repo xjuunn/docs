@@ -15,18 +15,16 @@
 
 
 *   [x] Nestjs
-*   [ ] typeorm
+*   [ ] Prisma
 *   [x] H3
 *   [x] Nitro
 *   [x] Nuxt
-*   [ ] Rust
-*   [ ] Spring Boot Security
+*   [x] Rust
 *   [ ] Lombok
 *   [x] Spring Doc
-*   [ ] MyBatis plus
 *   [ ] MapStruct
 *   [x] supabase
-*   [ ] Django
+*   [ ] monorepo
 
 
 
