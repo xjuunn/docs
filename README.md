@@ -12,16 +12,14 @@
 
 
 *   [x] Nestjs
-*   [ ] Prisma
+*   [x] Prisma
 *   [x] H3
 *   [x] Nitro
 *   [x] Nuxt
 *   [x] Rust
-*   [ ] Lombok
 *   [x] Spring Doc
-*   [ ] MapStruct
 *   [x] supabase
-*   [ ] monorepo
+*   [x] monorepo
 
 
 
