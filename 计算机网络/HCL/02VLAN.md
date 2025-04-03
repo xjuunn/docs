@@ -31,3 +31,16 @@ port hybrid vlan {vid} {tagged|untagged}
 
 
 
+## 二层交换机
+
+~~~ shell
+vlan 10
+int g1/0/1
+vlan 20 
+int g1/0/2
+int vlan-interface 10
+ip add 192.168.100.254 24
+int vlan-interface 20
+ip add 192.168.200.254 24
+~~~
+
