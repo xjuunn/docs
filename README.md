@@ -11,15 +11,6 @@
 
 
 
-*   [x] Nestjs
-*   [x] Prisma
-*   [x] H3
-*   [x] Nitro
-*   [x] Nuxt
-*   [x] Rust
-*   [x] Spring Doc
-*   [x] supabase
-*   [x] monorepo
 
 
 

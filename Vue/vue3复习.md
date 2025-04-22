@@ -1023,12 +1023,3 @@ function doupdate(){
 }
 </script>
 ~~~
-
----
-
-## Uniapp
-
-## uniapp 组件
-
-### Uniapp 打包
-

@@ -43,4 +43,3 @@ ip add 192.168.100.254 24
 int vlan-interface 20
 ip add 192.168.200.254 24
 ~~~
-
