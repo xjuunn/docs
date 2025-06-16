@@ -110,5 +110,3 @@ O 当前光标的上一行
 :%s/word/roooo 替换每一行的第一个word为roooo
 
 :%s/word/roooo/g 替换全篇
-
-![Untitled](VI%20VIM%E7%BC%96%E8%BE%91%E5%99%A8%203d4dd2419b0b4ebda36477b3796c0291/Untitled.png)
